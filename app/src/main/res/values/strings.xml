@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">iot</string>
+    <string name="Usuario">Usuario</string>
+    <string name="Contrasenia">Contrasenia</string>
+    <string name="btnIngresar">Ingresar</string>
+    <string name="title_activity_registrar_cuenta">RegistrarCuenta</string>
+    <string name="Contracenia2">Reingrese Contrasenia</string>
+    <string name="btnRegistrar">Registrar</string>
+    <string name="Registrar">Registrar Cuenta</string>
+    <string name="Registrar_MascotaP">Registrar Mascota</string>
+    <string name="Registrar_MascotaS">Registrar Mascota</string>
+</resources>
