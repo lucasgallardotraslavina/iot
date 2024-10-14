@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_registrar_mascota"
+        android:icon="@drawable/iot_logo"
+        android:title="Registrar Mascota" />
+
+    <item
+        android:id="@+id/action_registrar_historia"
+        android:icon="@drawable/iot_logo"
+        android:title="Registrar Historia" />
+
+    <item
+        android:id="@+id/action_ver_revisiones"
+        android:icon="@drawable/iot_logo"
+        android:title="Ver Revisiones" />
+
+    <item
+        android:id="@+id/action_volver_inicio"
+        android:title="Volver al inicio"
+        android:icon="@drawable/iot_logo" />
+</menu>
