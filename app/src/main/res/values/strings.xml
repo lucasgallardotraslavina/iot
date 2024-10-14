@@ -9,4 +9,10 @@
     <string name="Registrar">Registrar Cuenta</string>
     <string name="Registrar_MascotaP">Registrar Mascota</string>
     <string name="Registrar_MascotaS">Registrar Mascota</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_notification_channel_id">default_notification_channel_id</string>
+    <string name="mascota_image">Imagen de la mascota</string>
+    <string name="mensaje_imagen_mascota">mensaje imagen mascota</string>
+
 </resources>

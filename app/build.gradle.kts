@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
 
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -64,10 +65,18 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.database)
-    implementation("com.squareup.picasso:picasso:2.71828")
+
+    // Firebase dependencies
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
+    implementation(libs.google.firebase.storage)
+
+    // Image loading libraries
+    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -75,5 +84,4 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
 }
