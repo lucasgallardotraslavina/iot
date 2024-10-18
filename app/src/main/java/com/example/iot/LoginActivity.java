@@ -22,10 +22,17 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonLogin, buttonRegister;
     private FirebaseFirestore db;
 
+    //private AnimationDrawable animationDrawable;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Iniciar la animación
+        //animationDrawable = (AnimationDrawable) findViewById(R.id.constraintLayout).getBackground();
+        //animationDrawable.start();
 
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);

@@ -14,5 +14,7 @@
     <string name="default_notification_channel_id">default_notification_channel_id</string>
     <string name="mascota_image">Imagen de la mascota</string>
     <string name="mensaje_imagen_mascota">mensaje imagen mascota</string>
+    <string name="mascota_imagen">mascota imagen</string>
+    <string name="imagen_mascota">imagen mascota</string>
 
 </resources>

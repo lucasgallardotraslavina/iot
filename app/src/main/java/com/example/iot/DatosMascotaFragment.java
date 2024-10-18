@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +27,12 @@ public class DatosMascotaFragment extends Fragment {
     private TextView sexoTextView;
     private TextView colorTextView;
     private TextView fechaNacimientoTextView;
+    private Button btnModificarMascota;
+    private Button btnEliminarMascota;
     private ImageView imagenMascota;
 
     private FirebaseFirestore db;
+    private String mascotaId;
 
     @Nullable
     @Override
@@ -37,6 +41,7 @@ public class DatosMascotaFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
+        // Inicializar las vistas
         nombreDueñoTextView = view.findViewById(R.id.nombreDueñoTextView);
         direccionTextView = view.findViewById(R.id.direccionTextView);
         telefonoTextView = view.findViewById(R.id.telefonoTextView);
@@ -46,14 +51,37 @@ public class DatosMascotaFragment extends Fragment {
         sexoTextView = view.findViewById(R.id.sexoTextView);
         colorTextView = view.findViewById(R.id.colorTextView);
         fechaNacimientoTextView = view.findViewById(R.id.fechaNacimientoTextView);
-        imagenMascota = view.findViewById(R.id.imagenMascota);
-        String mascotaId = getArguments() != null ? getArguments().getString("mascotaId") : null;
+        imagenMascota = view.findViewById(R.id.imagenMascotaImageView);
+        btnModificarMascota = view.findViewById(R.id.btnModificarMascota);
+        btnEliminarMascota = view.findViewById(R.id.btnEliminarMascota);
 
+        // Obtener el ID de la mascota desde los argumentos
+        mascotaId = getArguments() != null ? getArguments().getString("mascotaId") : null;
+
+        // Cargar los datos de la mascota
         if (mascotaId != null) {
             cargarDatosMascota(mascotaId);
-        } else {
-            Toast.makeText(getContext(), "No se encontró el ID de la mascota", Toast.LENGTH_SHORT).show();
         }
+
+        // Redirigir al fragmento de editar al hacer clic en "Modificar"
+        btnModificarMascota.setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putString("mascotaId", mascotaId);
+
+            EditarMascotaFragment editarMascotaFragment = new EditarMascotaFragment();
+            editarMascotaFragment.setArguments(args);
+
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, editarMascotaFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        // Eliminar la mascota
+        btnEliminarMascota.setOnClickListener(v -> {
+            eliminarMascota(mascotaId);
+        });
 
         return view;
     }
@@ -71,29 +99,29 @@ public class DatosMascotaFragment extends Fragment {
                         razaTextView.setText(documentSnapshot.getString("raza"));
                         sexoTextView.setText(documentSnapshot.getString("sexo"));
                         colorTextView.setText(documentSnapshot.getString("color"));
-                        Object fechaNacimiento = documentSnapshot.get("fecha_nacimiento");
-                        if (fechaNacimiento instanceof String) {
-                            fechaNacimientoTextView.setText((String) fechaNacimiento);
-                        } else {
-                            fechaNacimientoTextView.setText("Fecha no disponible");
-                        }
-
+                        fechaNacimientoTextView.setText(documentSnapshot.getString("fecha_nacimiento"));
                         String imagenUrl = documentSnapshot.getString("imagen_mascota");
-                        if (imagenUrl != null && !imagenUrl.isEmpty()) {
-                            Glide.with(this)
-                                    .load(imagenUrl)
-                                    .placeholder(R.drawable.iot_logo)
-                                    .into(imagenMascota);
-                        } else {
-                            imagenMascota.setImageResource(R.drawable.iot_logo);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "No se encontró la mascota", Toast.LENGTH_SHORT).show();
+                        // Cargar la imagen con Glide o Picasso
+                        Glide.with(this)
+                                .load(imagenUrl)
+                                .into(imagenMascota);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Error al cargar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    // Manejar errores
                 });
     }
 
+    private void eliminarMascota(String mascotaId) {
+        db.collection("mascotas").document(mascotaId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getActivity(), "Mascota eliminada", Toast.LENGTH_SHORT).show();
+                    // Redirigir al fragmento de listado o a donde desees
+                    getFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getActivity(), "Error al eliminar la mascota", Toast.LENGTH_SHORT).show();
+                });
+    }
 }

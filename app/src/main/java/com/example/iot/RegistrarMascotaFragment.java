@@ -33,6 +33,7 @@ public class RegistrarMascotaFragment extends Fragment {
     private Uri imageUri;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
+    private String mascotaId; // Variable para almacenar el ID de la mascota si estamos editando
 
     @Nullable
     @Override
@@ -40,6 +41,8 @@ public class RegistrarMascotaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_registrar_mascota, container, false);
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+
+        // Inicializar vistas
         imageViewMascota = view.findViewById(R.id.imageViewMascota);
         editTextNombreDueño = view.findViewById(R.id.editTextNombreDueño);
         editTextDireccion = view.findViewById(R.id.editTextDireccion);
@@ -50,8 +53,16 @@ public class RegistrarMascotaFragment extends Fragment {
         editTextSexo = view.findViewById(R.id.editTextSexo);
         editTextColor = view.findViewById(R.id.editTextColor);
         editTextFechaNacimiento = view.findViewById(R.id.editTextFechaNacimiento);
+
         Button buttonSeleccionarImagen = view.findViewById(R.id.buttonSeleccionarImagen);
         Button buttonRegistrarMascota = view.findViewById(R.id.buttonRegistrarMascota);
+
+        // Obtener el ID de la mascota si estamos editando
+        if (getArguments() != null) {
+            mascotaId = getArguments().getString("mascota_id");
+            cargarDatosMascota(mascotaId);
+        }
+
         buttonSeleccionarImagen.setOnClickListener(v -> openFileChooser());
         buttonRegistrarMascota.setOnClickListener(v -> registrarMascota());
 
@@ -86,18 +97,29 @@ public class RegistrarMascotaFragment extends Fragment {
         String fechaNacimiento = editTextFechaNacimiento.getText().toString().trim();
 
         if (imageUri != null) {
-            StorageReference fileReference = storage.getReference("mascotas/" + System.currentTimeMillis() + ".jpg");
-            fileReference.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String imageUrl = uri.toString();
-                            guardarDatosMascota(nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento, imageUrl);
-                        });
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al subir la imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            if (mascotaId == null) {
+                // Registro de nueva mascota
+                StorageReference fileReference = storage.getReference("mascotas/" + System.currentTimeMillis() + ".jpg");
+                subirImagen(fileReference, nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento);
+            } else {
+                // Edición de mascota existente
+                StorageReference fileReference = storage.getReference("mascotas/" + mascotaId + ".jpg");
+                subirImagen(fileReference, nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento);
+            }
         } else {
             Toast.makeText(getActivity(), "Por favor selecciona una imagen.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void subirImagen(StorageReference fileReference, String nombreDueño, String direccion, String telefono, String nombreMascota, String especie, String raza, String sexo, String color, String fechaNacimiento) {
+        fileReference.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    fileReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        guardarDatosMascota(nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento, imageUrl);
+                    });
+                })
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al subir la imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void guardarDatosMascota(String nombreDueño, String direccion, String telefono, String nombreMascota, String especie, String raza, String sexo, String color, String fechaNacimiento, String imageUrl) {
@@ -114,18 +136,59 @@ public class RegistrarMascotaFragment extends Fragment {
         mascota.put("imagen_mascota", imageUrl);
         mascota.put("fechaRegistro", FieldValue.serverTimestamp());
 
-        db.collection("mascotas")
-                .add(mascota)
-                .addOnSuccessListener(documentReference -> {
-                    documentReference.update("mascota_id", documentReference.getId())
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(getActivity(), "Mascota registrada exitosamente!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-                                startActivity(intent);
-                                getActivity().finish();
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al actualizar el ID de la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        if (mascotaId == null) {
+            // Registro de nueva mascota
+            db.collection("mascotas")
+                    .add(mascota)
+                    .addOnSuccessListener(documentReference -> {
+                        documentReference.update("mascota_id", documentReference.getId())
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getActivity(), "Mascota registrada exitosamente!", Toast.LENGTH_SHORT).show();
+                                    navigateToMainActivity();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al actualizar el ID de la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al registrar la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            // Actualización de mascota existente
+            db.collection("mascotas").document(mascotaId)
+                    .set(mascota)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getActivity(), "Mascota actualizada exitosamente!", Toast.LENGTH_SHORT).show();
+                        navigateToMainActivity();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al actualizar la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void cargarDatosMascota(String mascotaId) {
+        db.collection("mascotas").document(mascotaId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        editTextNombreDueño.setText(documentSnapshot.getString("nombre_dueño"));
+                        editTextDireccion.setText(documentSnapshot.getString("direccion"));
+                        editTextTelefono.setText(documentSnapshot.getString("telefono"));
+                        editTextNombreMascota.setText(documentSnapshot.getString("nombre_mascota"));
+                        editTextEspecie.setText(documentSnapshot.getString("especie"));
+                        editTextRaza.setText(documentSnapshot.getString("raza"));
+                        editTextSexo.setText(documentSnapshot.getString("sexo"));
+                        editTextColor.setText(documentSnapshot.getString("color"));
+                        editTextFechaNacimiento.setText(documentSnapshot.getString("fecha_nacimiento"));
+                        String imageUrl = documentSnapshot.getString("imagen_mascota");
+                        if (imageUrl != null) {
+                            Glide.with(this).load(imageUrl).into(imageViewMascota);
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "No se encontraron datos de la mascota.", Toast.LENGTH_SHORT).show();
+                    }
                 })
-                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al registrar la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al cargar los datos de la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void navigateToMainActivity() {
+        // Navega de vuelta a MainActivity
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new MainFragment())
+                .commit();
     }
 }
