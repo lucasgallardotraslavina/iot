@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -22,17 +23,10 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonLogin, buttonRegister;
     private FirebaseFirestore db;
 
-    //private AnimationDrawable animationDrawable;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        // Iniciar la animación
-        //animationDrawable = (AnimationDrawable) findViewById(R.id.constraintLayout).getBackground();
-        //animationDrawable.start();
 
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
@@ -66,13 +60,27 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        db.collection("usuarios").document(username).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        // Realizar una consulta a la colección de usuarios buscando por el campo "username"
+        db.collection("usuarios")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists() && document.getString("password").equals(password)) {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            boolean validLogin = false;
+
+                            // Recorrer los documentos devueltos por la consulta
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String storedPassword = document.getString("password");
+
+                                if (storedPassword != null && storedPassword.equals(password)) {
+                                    validLogin = true;
+                                    break;
+                                }
+                            }
+
+                            if (validLogin) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -80,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Credenciales inválidas", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(LoginActivity.this, "Error al acceder a la base de datos", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

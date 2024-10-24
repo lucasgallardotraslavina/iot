@@ -15,21 +15,29 @@
             android:layout_height="wrap_content"
             android:text="Registrar Historia"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:layout_marginBottom="16dp" />
 
         <EditText
             android:id="@+id/et_historia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escribe la historia de tu mascota"
-            android:padding="10dp" />
+            android:padding="12dp"
+            android:backgroundTint="@color/primary_color"
+            android:textColorHint="@color/secondary_text" />
 
         <Button
             android:id="@+id/btn_guardar_historia"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Guardar Historia" />
+            android:padding="12dp"
+            android:backgroundTint="@color/primary_color"
+            android:text="Guardar Historia"
+            android:textColor="@color/text_icons"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/historias_layout"
@@ -37,5 +45,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp" />
+
+        <!-- Contenedor para las historias registradas -->
+        <LinearLayout
+            android:id="@+id/historias_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp" />
+
     </LinearLayout>
 </ScrollView>

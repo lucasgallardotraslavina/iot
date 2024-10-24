@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -55,11 +56,11 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
         usuario.put("username", username);
         usuario.put("password", password);
 
-        db.collection("usuarios").document(username)
-                .set(usuario)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        // Ahora manejamos la respuesta con un Task<DocumentReference>
+        db.collection("usuarios").add(usuario)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegistrarUsuarioActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
                             finish();
