@@ -17,12 +17,12 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
     private List<Mascota> listaMascotas;
     private OnMascotaClickListener onMascotaClickListener;
 
-    // Interfaz para el listener de clic
+
     public interface OnMascotaClickListener {
         void onMascotaClick(Mascota mascota);
     }
 
-    // Constructor que recibe la lista de mascotas y el listener
+
     public MascotaAdapter(List<Mascota> listaMascotas, OnMascotaClickListener onMascotaClickListener) {
         this.listaMascotas = listaMascotas;
         this.onMascotaClickListener = onMascotaClickListener;
@@ -39,15 +39,15 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
     public void onBindViewHolder(@NonNull MascotaViewHolder holder, int position) {
         Mascota mascota = listaMascotas.get(position);
 
-        // Mostrar nombre de la mascota
+
         holder.nombreTextView.setText(mascota.getNombre_mascota());
 
-        // Cargar la imagen usando Glide
+
         Glide.with(holder.itemView.getContext())
-                .load(mascota.getImagen_mascota())  // URL de la imagen de la mascota
+                .load(mascota.getImagen_mascota())
                 .into(holder.imagenImageView);
 
-        // Configurar el listener para el clic
+
         holder.itemView.setOnClickListener(v -> onMascotaClickListener.onMascotaClick(mascota));
     }
 
@@ -56,7 +56,7 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
         return listaMascotas.size();
     }
 
-    // Clase ViewHolder para cada mascota
+
     static class MascotaViewHolder extends RecyclerView.ViewHolder {
         ImageView imagenImageView;
         TextView nombreTextView;

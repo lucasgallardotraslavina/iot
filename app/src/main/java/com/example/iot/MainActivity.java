@@ -17,17 +17,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Configurar el toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Cargar el MainFragment al iniciar la aplicación
+
         if (savedInstanceState == null) {
             loadFragment(new MainFragment());
         }
     }
 
-    // Método para cargar el fragmento
+
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
@@ -35,14 +34,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Inflar el menú
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
-    // Manejar los clics en el menú
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

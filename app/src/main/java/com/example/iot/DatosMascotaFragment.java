@@ -55,15 +55,13 @@ public class DatosMascotaFragment extends Fragment {
         btnModificarMascota = view.findViewById(R.id.btnModificarMascota);
         btnEliminarMascota = view.findViewById(R.id.btnEliminarMascota);
 
-        // Obtener el ID de la mascota desde los argumentos
+
         mascotaId = getArguments() != null ? getArguments().getString("mascotaId") : null;
 
-        // Cargar los datos de la mascota
         if (mascotaId != null) {
             cargarDatosMascota(mascotaId);
         }
 
-        // Redirigir al fragmento de editar al hacer clic en "Modificar"
         btnModificarMascota.setOnClickListener(v -> {
             Bundle args = new Bundle();
             args.putString("mascotaId", mascotaId);
@@ -78,7 +76,7 @@ public class DatosMascotaFragment extends Fragment {
                     .commit();
         });
 
-        // Eliminar la mascota
+
         btnEliminarMascota.setOnClickListener(v -> {
             eliminarMascota(mascotaId);
         });
@@ -101,14 +99,13 @@ public class DatosMascotaFragment extends Fragment {
                         colorTextView.setText(documentSnapshot.getString("color"));
                         fechaNacimientoTextView.setText(documentSnapshot.getString("fecha_nacimiento"));
                         String imagenUrl = documentSnapshot.getString("imagen_mascota");
-                        // Cargar la imagen con Glide o Picasso
                         Glide.with(this)
                                 .load(imagenUrl)
                                 .into(imagenMascota);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Manejar errores
+
                 });
     }
 
@@ -117,7 +114,6 @@ public class DatosMascotaFragment extends Fragment {
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getActivity(), "Mascota eliminada", Toast.LENGTH_SHORT).show();
-                    // Redirigir al fragmento de listado o a donde desees
                     getFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> {

@@ -56,7 +56,6 @@ public class RegistrarUsuarioActivity extends AppCompatActivity {
         usuario.put("username", username);
         usuario.put("password", password);
 
-        // Ahora manejamos la respuesta con un Task<DocumentReference>
         db.collection("usuarios").add(usuario)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override

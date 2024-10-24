@@ -27,7 +27,7 @@ public class RegistrarHistoriaFragment extends Fragment {
 
     private EditText etHistoria;
     private Button btnGuardarHistoria;
-    private LinearLayout historiasContainer; // Cambiado a historiasContainer
+    private LinearLayout historiasContainer;
     private FirebaseFirestore db;
     private List<Historia> historias;
     private String historiaIdParaEditar;
@@ -86,7 +86,7 @@ public class RegistrarHistoriaFragment extends Fragment {
     }
 
     private void obtenerHistorias() {
-        historiasContainer.removeAllViews(); // Cambiado a historiasContainer
+        historiasContainer.removeAllViews();
         historias.clear();
 
         db.collection("historias")
@@ -106,41 +106,37 @@ public class RegistrarHistoriaFragment extends Fragment {
     }
 
     private void agregarHistoriaATextView(Historia historia) {
-        // Crear un contenedor para la historia
         LinearLayout historiaLayout = new LinearLayout(getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 10, 0, 10); // Establecer márgenes
+        params.setMargins(0, 10, 0, 10);
         historiaLayout.setLayoutParams(params);
         historiaLayout.setOrientation(LinearLayout.VERTICAL);
         historiaLayout.setPadding(16, 16, 16, 16);
         historiaLayout.setBackgroundColor(getResources().getColor(R.color.light_primary_color));
-        historiaLayout.setElevation(4); // Añadir elevación para dar sombra
+        historiaLayout.setElevation(4);
 
-        // Crear un TextView para mostrar la historia
         TextView textView = new TextView(getContext());
         textView.setText(historia.getTexto());
         textView.setTextSize(16);
         textView.setTextColor(getResources().getColor(R.color.primary_text));
-        textView.setPadding(0, 10, 0, 10); // Añadir padding
+        textView.setPadding(0, 10, 0, 10);
 
-        // Agregar el TextView al contenedor de la historia
         historiaLayout.addView(textView);
 
-        // Botón de Editar
+
         Button btnEditar = new Button(getContext());
         btnEditar.setText("Editar");
         btnEditar.setOnClickListener(v -> editarHistoria(historia));
         historiaLayout.addView(btnEditar);
 
-        // Botón de Eliminar
         Button btnEliminar = new Button(getContext());
         btnEliminar.setText("Eliminar");
         btnEliminar.setOnClickListener(v -> eliminarHistoria(historia.getId()));
         historiaLayout.addView(btnEliminar);
 
-        // Agregar el contenedor de la historia al layout principal
+
         historiasContainer.addView(historiaLayout);
     }
 

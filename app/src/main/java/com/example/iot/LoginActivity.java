@@ -60,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Realizar una consulta a la colección de usuarios buscando por el campo "username"
         db.collection("usuarios")
                 .whereEqualTo("username", username)
                 .get()
@@ -70,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             boolean validLogin = false;
 
-                            // Recorrer los documentos devueltos por la consulta
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String storedPassword = document.getString("password");
 

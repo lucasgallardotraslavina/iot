@@ -33,7 +33,7 @@ public class RegistrarMascotaFragment extends Fragment {
     private Uri imageUri;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
-    private String mascotaId; // Variable para almacenar el ID de la mascota si estamos editando
+    private String mascotaId;
 
     @Nullable
     @Override
@@ -57,7 +57,7 @@ public class RegistrarMascotaFragment extends Fragment {
         Button buttonSeleccionarImagen = view.findViewById(R.id.buttonSeleccionarImagen);
         Button buttonRegistrarMascota = view.findViewById(R.id.buttonRegistrarMascota);
 
-        // Obtener el ID de la mascota si estamos editando
+
         if (getArguments() != null) {
             mascotaId = getArguments().getString("mascota_id");
             cargarDatosMascota(mascotaId);
@@ -98,11 +98,10 @@ public class RegistrarMascotaFragment extends Fragment {
 
         if (imageUri != null) {
             if (mascotaId == null) {
-                // Registro de nueva mascota
                 StorageReference fileReference = storage.getReference("mascotas/" + System.currentTimeMillis() + ".jpg");
                 subirImagen(fileReference, nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento);
             } else {
-                // Edición de mascota existente
+
                 StorageReference fileReference = storage.getReference("mascotas/" + mascotaId + ".jpg");
                 subirImagen(fileReference, nombreDueño, direccion, telefono, nombreMascota, especie, raza, sexo, color, fechaNacimiento);
             }
@@ -137,7 +136,7 @@ public class RegistrarMascotaFragment extends Fragment {
         mascota.put("fechaRegistro", FieldValue.serverTimestamp());
 
         if (mascotaId == null) {
-            // Registro de nueva mascota
+
             db.collection("mascotas")
                     .add(mascota)
                     .addOnSuccessListener(documentReference -> {
@@ -150,7 +149,7 @@ public class RegistrarMascotaFragment extends Fragment {
                     })
                     .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al registrar la mascota: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            // Actualización de mascota existente
+
             db.collection("mascotas").document(mascotaId)
                     .set(mascota)
                     .addOnSuccessListener(aVoid -> {

@@ -53,7 +53,7 @@ public class EditarMascotaFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference("mascotas");
 
-        // Inicializar las vistas
+
         nombreDueñoEditText = view.findViewById(R.id.nombreDueñoEditText);
         direccionEditText = view.findViewById(R.id.direccionEditText);
         telefonoEditText = view.findViewById(R.id.telefonoEditText);
@@ -67,10 +67,8 @@ public class EditarMascotaFragment extends Fragment {
         btnElegirImagen = view.findViewById(R.id.btnElegirImagen);
         btnGuardarCambios = view.findViewById(R.id.btnGuardarCambios);
 
-        // Obtener el ID de la mascota desde los argumentos
         mascotaId = getArguments() != null ? getArguments().getString("mascotaId") : null;
 
-        // Cargar los datos de la mascota
         if (mascotaId != null) {
             cargarDatosMascota(mascotaId);
         }
@@ -81,7 +79,7 @@ public class EditarMascotaFragment extends Fragment {
             if (imagenUri != null) {
                 subirImagenYGuardarMascota();
             } else {
-                guardarMascota(null); // No hay nueva imagen
+                guardarMascota(null);
             }
         });
 
@@ -110,7 +108,6 @@ public class EditarMascotaFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Manejar errores
                 });
     }
 

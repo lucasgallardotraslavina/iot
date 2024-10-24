@@ -25,14 +25,14 @@ public class MainFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Configurar RecyclerView
+
         recyclerView = view.findViewById(R.id.recyclerViewMascotas);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializar Firebase Firestore
+
         db = FirebaseFirestore.getInstance();
 
-        // Cargar datos de mascotas desde Firebase
+
         cargarMascotas();
 
         return view;
@@ -47,11 +47,9 @@ public class MainFragment extends Fragment {
                     Mascota mascota = document.toObject(Mascota.class);
                     listaMascotas.add(mascota);
                 }
-                // Actualizar el adaptador con la lista de mascotas
+
                 mascotaAdapter = new MascotaAdapter(listaMascotas, mascota -> {
-                    // Manejar el clic en la mascota, navegar a DatosMascotaFragment
                     Bundle bundle = new Bundle();
-                    // Reemplaza la línea con getId() por esto
                     bundle.putString("mascotaId", mascota.getMascota_id());
 
                     DatosMascotaFragment datosMascotaFragment = new DatosMascotaFragment();

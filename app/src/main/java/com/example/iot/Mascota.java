@@ -13,10 +13,9 @@ public class Mascota {
     private String sexo;
     private String telefono;
 
-    // Constructor vacío necesario para Firebase
     public Mascota() {}
 
-    // Constructor con parámetros opcionales
+
     public Mascota(String nombre_mascota, String imagen_mascota, String mascota_id, String color, String direccion,
                    String especie, String fecha_nacimiento, String nombre_dueño, String raza, String sexo, String telefono) {
         this.nombre_mascota = nombre_mascota;
@@ -32,7 +31,7 @@ public class Mascota {
         this.telefono = telefono;
     }
 
-    // Getters y Setters para cada campo
+
     public String getNombre_mascota() {
         return nombre_mascota;
     }
